@@ -15,6 +15,9 @@
     <!-- Settings Menu Item [CHAR LIMIT=NONE] -->
     <string name="settings_menu_item">Settings</string>
 
+    <!-- Display before a user makes a search -->
+    <string name="search_for_something">Start by searching for something.</string>
+
     <!-- Strings For Number of Books Shown Preference [CHAR LIMIT=30] -->
     <string name="settings_num_books_label">Number of Books Shown</string>
     <string name="settings_num_books_key" translatable="false">num_earthquakes</string>
