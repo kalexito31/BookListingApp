@@ -12,6 +12,8 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import static android.text.TextUtils.join;
+
 
 /**
  * Created by Kevin on 6/18/2017.
@@ -40,13 +42,8 @@ public class BookListAdapter extends ArrayAdapter<Book> {
 
         //Set authors for the book
         TextView authorView = (TextView) listItemView.findViewById(R.id.book_authors);
-        String[]authors = currentBook.getBookAuthors();
-        for(int i=0; i<authors.length; i++){
-            authorView.append(authors[i]);
-            if(i!=authors.length-1) {
-                authorView.append(", ");
-            }
-        }
+        String authors = join(", ", currentBook.getBookAuthors());
+        authorView.setText(authors);
 
         //Set description for the book
         TextView descriptionView = (TextView) listItemView.findViewById(R.id.book_description);

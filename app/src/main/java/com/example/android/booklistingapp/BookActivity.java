@@ -1,7 +1,10 @@
 package com.example.android.booklistingapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -61,9 +64,10 @@ public class BookActivity extends AppCompatActivity {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
+                // Show loading indicator
+                View loadingIndicator = findViewById(R.id.loading_indicator);
+                loadingIndicator.setVisibility(View.VISIBLE);
+
                 //Start loading results
                 mAdapter.clear();
 
@@ -90,6 +94,7 @@ public class BookActivity extends AppCompatActivity {
         ListView bookListView = (ListView) findViewById(R.id.list);
 
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
+        mEmptyStateTextView.setText(R.string.search_for_something);
         bookListView.setEmptyView(mEmptyStateTextView);
 
         // Create a new adapter that takes an empty list of books as input
@@ -132,11 +137,28 @@ public class BookActivity extends AppCompatActivity {
                 View loadingIndicator = findViewById(R.id.loading_indicator);
                 loadingIndicator.setVisibility(View.VISIBLE);
 
-                //Start loading results
-                BookAsyncTask task = new BookAsyncTask();
-                task.execute();
+                if(isNetworkAvailable()) {
+                    //Start loading results if network is available
+                    BookAsyncTask task = new BookAsyncTask();
+                    task.execute();
+                }
+                else{
+                    // Hide loading indicator because no network connection
+                    loadingIndicator.setVisibility(View.GONE);
+
+                    //clear previous results if any and show "No internet Connection"
+                    mAdapter.clear();
+                    mEmptyStateTextView.setText(R.string.no_internet_connection);
+                }
             }
         });
+    }
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     @Override
@@ -177,7 +199,7 @@ public class BookActivity extends AppCompatActivity {
 
             uriBuilder.appendQueryParameter("maxResults", numBooks);
 
-            Log.d("THIS IS THE REQUEST URL",uriBuilder.toString());
+            Log.d("THIS IS THE REQUEST URL", uriBuilder.toString());
 
             // Perform the network request, parse the response, and extract a list of books.
             List<Book> books = QueryUtils.fetchBookData(uriBuilder.toString());
@@ -199,6 +221,10 @@ public class BookActivity extends AppCompatActivity {
             // data set. This will trigger the ListView to update.
             if (books != null && !books.isEmpty()) {
                 mAdapter.addAll(books);
+            }
+            else{
+                // Set empty state text to display "No books found."
+                mEmptyStateTextView.setText(R.string.no_books);
             }
         }
     }
