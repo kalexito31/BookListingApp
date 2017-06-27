@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -175,6 +176,8 @@ public class BookActivity extends AppCompatActivity {
             String numBooks = sharedPrefs.getString(getString(R.string.settings_num_books_key), getString(R.string.settings_num_books_default));
 
             uriBuilder.appendQueryParameter("maxResults", numBooks);
+
+            Log.d("THIS IS THE REQUEST URL",uriBuilder.toString());
 
             // Perform the network request, parse the response, and extract a list of books.
             List<Book> books = QueryUtils.fetchBookData(uriBuilder.toString());

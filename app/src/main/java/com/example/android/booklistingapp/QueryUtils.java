@@ -124,8 +124,14 @@ public class QueryUtils {
                     authors = authorList.toArray(new String[authorList.size()]);
                 }
 
+
                 //Extract value for the key called "description"
-                String description = properties.getString("description");
+                String description = "";
+                if(properties.has("description"))
+                    description = properties.getString("description");
+                else{
+                    description = "No description available.";
+                }
 
                 //Extract value for thumbnail from key called "imageLinks"
                 String thumbnailLink = properties.getJSONObject("imageLinks").getString("thumbnail");
