@@ -111,12 +111,17 @@ public class QueryUtils {
                 JSONObject properties = currentBook.getJSONObject("volumeInfo");
 
                 // Extract the value for the key called "title"
-                String title  = properties.getString("title");
+                String title  = "";
+                if(properties.has("title")){
+                    title = properties.getString("title");
+                }
+
 
                 // Extract the array of authors
                 String [] authors = new String[]{};
-                JSONArray authorJsonArray = properties.getJSONArray("authors");
-                if(authorJsonArray!= null) {
+
+                if(properties.has("authors")) {
+                    JSONArray authorJsonArray = properties.getJSONArray("authors");
                     ArrayList<String> authorList = new ArrayList<String>();
                     for (int j = 0; j < authorJsonArray.length(); j++) {
                         authorList.add(authorJsonArray.get(j).toString());
@@ -134,10 +139,18 @@ public class QueryUtils {
                 }
 
                 //Extract value for thumbnail from key called "imageLinks"
-                String thumbnailLink = properties.getJSONObject("imageLinks").getString("thumbnail");
+                String thumbnailLink = "";
+                if(properties.has("imageLinks")){
+                    thumbnailLink = properties.getJSONObject("imageLinks").getString("thumbnail");
+                }
+
 
                 // Extract the value for the key called "url"
-                String url = properties.getString("infoLink");
+                String url = "";
+                if(properties.has("infoLink")){
+                    url = properties.getString("infoLink");
+                }
+                
 
                 // Create a new {@link Earthquake} object with the magnitude, location, time,
                 // and url from the JSON response.
